@@ -99,14 +99,12 @@ task( "swap", "To swap A-TOKEN to another B-TOKEN", async(taskArgs, hre) => {
 
   const token1Address = "0x5FbDB2315678afecb367f032d93F642f64180aa3";  
   const token2Address = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
-  const convertTokenAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
-
-  const owner1Address = acc1.address;
-  const owner2Address= acc2.address;
+  const convertTokenAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"; 
 
   
 
   const token1 = await BaseToken.attach(token1Address);
+  const converter = await TokenConverter.attach(convertTokenAddress);
 
   // In token1, acc1 gives the right to transfer tokens to convertTokenAddress
   // now convertTokenAddress can send the tokens to anyone he wants
@@ -117,14 +115,12 @@ task( "swap", "To swap A-TOKEN to another B-TOKEN", async(taskArgs, hre) => {
 
   const allow1 = hre.ethers.utils.formatEther( a);
   console.log("alowed[acc1][owner2Address]=", allow1); 
-  
-
-  const converter = await TokenConverter.attach(convertTokenAddress);
 
   await converter.setFirstTokenPrice(2);
 
 
   const amountEther  = hre.ethers.utils.parseEther('4');
+
   const succesed3 = await converter.connect(acc1).convertFirstTokenToSecond(  amountEther  );
 
   if (!succesed3) { "succesed3=false"; return;}
