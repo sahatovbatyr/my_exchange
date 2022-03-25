@@ -11,12 +11,15 @@ contract TokenConverter is Ownable {
 
     address private _firstTokenAddress;
     address private _secondTokenAddress;
+    uint256 private _commission;
+
 
     uint256 private _firstTokenPrice;   
 
     constructor( address firstAddress, address secondAddress  ) {  
         _firstTokenAddress = firstAddress;
         _secondTokenAddress = secondAddress;
+        _commission = 10;
 
     }
 
@@ -28,21 +31,48 @@ contract TokenConverter is Ownable {
         return _firstTokenPrice ;
     } 
 
-    function convertFirstTokenToSecond( uint256  amount) public   {  
+    function setCommission (uint256 commission) public onlyOwner   {
+        _commission = commission;
+    } 
 
-        console.log("TokenConvertor.convertFirstTokenToSecond(): msg.sender= ", msg.sender );      
+    function getCommission () public view returns(uint256)  {
+        return _commission ;
+    } 
+
+    function convertFirstTokenToSecond( uint256  amount) public   {              
 
         BaseToken token1 =  BaseToken(_firstTokenAddress);
         BaseToken token2 =  BaseToken(_secondTokenAddress);
 
-        token1.transferFrom_my( msg.sender, address(this) , amount);
-        token2.transfer_my(_firstTokenAddress, calculateAmount(amount));
-         console.log("TokenConvertor.convertFirstTokenToSecond(): _firstTokenAddress= ", _firstTokenAddress );  
+        token1.transferFrom( msg.sender, address(this) , amount);
+        token1.transferFrom( msg.sender, owner() , amount);
+        token2.transfer(_firstTokenAddress, calculateAmount_foSecondToken(amount));           
     } 
 
-    function calculateAmount(  uint256 amount) internal view returns (uint256) {
+    function convertSecondTokenToFirst( uint256  amount) public   {
+
+        BaseToken token1 =  BaseToken(_firstTokenAddress);
+        BaseToken token2 =  BaseToken(_secondTokenAddress);
+
+        token2.transferFrom( msg.sender, address(this) , amount);
+        token2.transferFrom( msg.sender, owner() , amount);
+        token1.transfer(_secondTokenAddress, calculateAmount_foFirstToken(amount));
+         
+    }
+
+    function calculateAmount_foSecondToken(  uint256 amount) internal view returns (uint256) {
         return _firstTokenPrice*amount;
     }
+
+    function calculateAmount_foFirstToken(  uint256 amount) internal view returns (uint256) {
+        return amount/_firstTokenPrice;
+    }
+
+     function calculateCommission(  uint256 amount) internal view returns (uint256) {
+        return (_commission*amount)/100;
+    }
+
+
 
 
 
