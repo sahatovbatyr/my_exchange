@@ -20,22 +20,7 @@ contract BaseToken is ERC20, Ownable  {
 
     }
 
-    function transfer_my( address to, uint256 amount )  public  returns (bool ) {
-
-        console.log("BaseToken.tranfer_my(): contract_adr=%s  msg.sender=%s", address(this), msg.sender);
-        console.log("BaseToken.tranfer_my(): to_adress= ", to);
-
-        return transfer( to,  amount);
-
-    }
-
-    function transferFrom_my( address from, address to, uint256 amount)  public  returns (bool ) {
-
-        console.log("BaseToken.tranferFrom_my(): contract_adr=%s  msg.sender=%s", address(this), msg.sender);
-
-        return transferFrom(from,  to,  amount);
-
-    }
+    
 
 
 
